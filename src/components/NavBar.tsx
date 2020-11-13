@@ -13,8 +13,6 @@ const NavBar: React.FC<NavBarProps> = ({}) => {
     const [{data, fetching}] = useMeQuery({pause: isServer()});
     let body = null;
 
-    console.log("data: ", data);
-
     if (fetching) {
 
     } else if (!data?.me) {
