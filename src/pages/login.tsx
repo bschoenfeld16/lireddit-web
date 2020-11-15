@@ -24,7 +24,11 @@ const Login: React.FC<{}> = ({}) => {
                         setErrors(toErrorMap(response.data.login.errors));
                     } else if (response.data?.login.user) {
                         // worked
-                        await router.push("/");
+                        if (typeof router.query.next === "string") {
+                            await router.push(router.query.next);
+                        } else {
+                            await router.push("/");
+                        }
                     }
                 }}>
                 {({ isSubmitting }) => (
