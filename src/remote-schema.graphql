@@ -19,6 +19,7 @@ type Mutation {
     logout: Boolean!
     register(options: UsernamePasswordInput!): UserResponse!
     updatePost(id: Float!, title: String): Post
+    vote(postId: Int!, value: Int!): Boolean!
 }
 
 type PaginatedPosts {
@@ -28,6 +29,7 @@ type PaginatedPosts {
 
 type Post {
     createdAt: String!
+    creator: User!
     creatorId: Float!
     id: Int!
     points: Float!
