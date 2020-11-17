@@ -215,6 +215,13 @@ export type RegisterMutation = { __typename?: "Mutation" } & {
     register: { __typename?: "UserResponse" } & RegularUserResponseFragment;
 };
 
+export type VoteMutationVariables = Exact<{
+    value: Scalars["Int"];
+    postId: Scalars["Int"];
+}>;
+
+export type VoteMutation = { __typename?: "Mutation" } & Pick<Mutation, "vote">;
+
 export type MeQueryVariables = Exact<{ [key: string]: never }>;
 
 export type MeQuery = { __typename?: "Query" } & {
@@ -357,6 +364,15 @@ export function useRegisterMutation() {
     return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(
         RegisterDocument
     );
+}
+export const VoteDocument = gql`
+    mutation Vote($value: Int!, $postId: Int!) {
+        vote(value: $value, postId: $postId)
+    }
+`;
+
+export function useVoteMutation() {
+    return Urql.useMutation<VoteMutation, VoteMutationVariables>(VoteDocument);
 }
 export const MeDocument = gql`
     query Me {
