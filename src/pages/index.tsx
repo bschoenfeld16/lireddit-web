@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { withUrqlClient } from "next-urql";
 import { createUrqlClient } from "../utils/createUrqlClient";
-import { useDeletePostMutation, usePostsQuery } from "../generated/graphql";
+import {
+    useDeletePostMutation,
+    useMeQuery,
+    usePostsQuery,
+} from "../generated/graphql";
 import Layout from "../components/Layout";
 import { Box, Flex, Heading, Link, Stack, Text } from "@chakra-ui/layout";
 import NextLink from "next/link";
@@ -21,6 +25,7 @@ const Index = () => {
         return <div>query failed for some reason</div>;
     }
 
+    const [{ data: meData }] = useMeQuery();
     const [, deletePost] = useDeletePostMutation();
 
     return (
@@ -52,15 +57,18 @@ const Index = () => {
                                         <Text flex={1} mt={4}>
                                             {p.textSnippet}
                                         </Text>
-                                        <IconButton
-                                            ml="auto"
-                                            colorScheme="red"
-                                            icon={<DeleteIcon />}
-                                            aria-label="Delete Post"
-                                            onClick={() => {
-                                                deletePost({ id: p.id });
-                                            }}
-                                        />
+                                        {p.creator.id !==
+                                        meData?.me?.id ? null : (
+                                            <IconButton
+                                                ml="auto"
+                                                colorScheme="red"
+                                                icon={<DeleteIcon />}
+                                                aria-label="Delete Post"
+                                                onClick={() => {
+                                                    deletePost({ id: p.id });
+                                                }}
+                                            />
+                                        )}
                                     </Flex>
                                 </Box>
                             </Flex>
