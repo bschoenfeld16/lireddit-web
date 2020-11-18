@@ -13,7 +13,7 @@ type FieldError {
 type Mutation {
     changePassword(newPassword: String!, token: String!): UserResponse!
     createPost(input: PostInput!): Post!
-    deletePost(id: Float!): Boolean!
+    deletePost(id: Int!): Boolean!
     forgotPassword(email: String!): Boolean!
     login(password: String!, usernameOrEmail: String!): UserResponse!
     logout: Boolean!
