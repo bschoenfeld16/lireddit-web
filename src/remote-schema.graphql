@@ -43,7 +43,7 @@ type Post {
 type Query {
     hello: String!
     me: User
-    post(id: Float!): Post
+    post(id: Int!): Post
     posts(cursor: String, limit: Int!): PaginatedPosts!
 }
 
