@@ -8,9 +8,11 @@ import { useLoginMutation } from "../generated/graphql";
 import { toErrorMap } from "../utils/toErrorMap";
 import { useRouter } from "next/router";
 import NextLink from "next/link";
+import { useApolloClient } from "@apollo/client";
 
 const Login: React.FC<{}> = ({}) => {
     const router = useRouter();
+    const apolloClient = useApolloClient();
     const [login] = useLoginMutation();
     return (
         <Wrapper variant="small">
@@ -18,6 +20,7 @@ const Login: React.FC<{}> = ({}) => {
                 initialValues={{ usernameOrEmail: "", password: "" }}
                 onSubmit={async (values, { setErrors }) => {
                     const response = await login({ variables: values });
+                    await apolloClient.resetStore();
                     if (response.data?.login.errors) {
                         setErrors(toErrorMap(response.data.login.errors));
                     } else if (response.data?.login.user) {

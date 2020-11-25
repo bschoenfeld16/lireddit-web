@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     useDeletePostMutation,
     useMeQuery,
@@ -12,12 +12,12 @@ import UpdootSection from "../components/UpdootSection";
 import { DeleteIcon } from "@chakra-ui/icons";
 
 const Index = () => {
-    const [variables, setVariables] = useState({
-        limit: 15,
-        cursor: null as string | null,
-    });
-    const { data, loading } = usePostsQuery({
-        variables,
+    const { data, loading, fetchMore, variables } = usePostsQuery({
+        variables: {
+            limit: 15,
+            cursor: null,
+        },
+        notifyOnNetworkStatusChange: true,
     });
     if (!loading && !data) {
         return <div>query failed for some reason</div>;
@@ -80,12 +80,34 @@ const Index = () => {
                 <Flex>
                     <Button
                         onClick={() => {
-                            setVariables({
-                                limit: variables.limit,
-                                cursor:
-                                    data?.posts.posts[
-                                        data.posts.posts.length - 1
-                                    ].createdAt,
+                            fetchMore({
+                                variables: {
+                                    limit: variables?.limit,
+                                    cursor:
+                                        data?.posts.posts[
+                                            data.posts.posts.length - 1
+                                        ].createdAt,
+                                },
+                                // updateQuery: (
+                                //     previousValue,
+                                //     { fetchMoreResult }
+                                // ): PostsQuery => {
+                                //     if (!fetchMoreResult) {
+                                //         return previousValue as PostsQuery;
+                                //     }
+                                //     return {
+                                //         __typename: "Query",
+                                //         posts: {
+                                //             __typename: "PaginatedPosts",
+                                //             hasMore: (fetchMoreResult as PostsQuery)
+                                //                 .posts.hasMore,
+                                //             posts: [
+                                //                 ...(previousValue as PostsQuery)
+                                //                     .posts.posts,
+                                //             ],
+                                //         },
+                                //     };
+                                // },
                             });
                         }}
                         isLoading={loading}
