@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../utils/createUrqlClient";
 import {
     useDeletePostMutation,
     useMeQuery,
@@ -18,19 +16,19 @@ const Index = () => {
         limit: 15,
         cursor: null as string | null,
     });
-    const [{ data, fetching }] = usePostsQuery({
+    const { data, loading } = usePostsQuery({
         variables,
     });
-    if (!fetching && !data) {
+    if (!loading && !data) {
         return <div>query failed for some reason</div>;
     }
 
-    const [{ data: meData }] = useMeQuery();
-    const [, deletePost] = useDeletePostMutation();
+    const { data: meData } = useMeQuery();
+    const [deletePost] = useDeletePostMutation();
 
     return (
         <Layout>
-            {!data && fetching ? (
+            {!data && loading ? (
                 <div>loading...</div>
             ) : (
                 <Stack spacing={8}>
@@ -65,7 +63,9 @@ const Index = () => {
                                                 icon={<DeleteIcon />}
                                                 aria-label="Delete Post"
                                                 onClick={() => {
-                                                    deletePost({ id: p.id });
+                                                    deletePost({
+                                                        variables: { id: p.id },
+                                                    });
                                                 }}
                                             />
                                         )}
@@ -88,7 +88,7 @@ const Index = () => {
                                     ].createdAt,
                             });
                         }}
-                        isLoading={fetching}
+                        isLoading={loading}
                         m="auto"
                         my={8}>
                         Load more
@@ -99,4 +99,4 @@ const Index = () => {
     );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Index);
+export default Index;

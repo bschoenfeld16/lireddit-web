@@ -1,6 +1,4 @@
 import React from "react";
-import { withUrqlClient } from "next-urql";
-import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useRouter } from "next/router";
 import { usePostQuery } from "../../generated/graphql";
 import Layout from "../../components/Layout";
@@ -10,13 +8,13 @@ export const Post: React.FC = ({}) => {
     const router = useRouter();
     const intId =
         typeof router.query.id === "string" ? parseInt(router.query.id) : -1;
-    const [{ data, error, fetching }] = usePostQuery({
-        pause: intId === -1,
+    const { data, error, loading } = usePostQuery({
+        skip: intId === -1,
         variables: {
             id: intId,
         },
     });
-    if (fetching) {
+    if (loading) {
         return (
             <Layout>
                 <div>loading...</div>
@@ -43,4 +41,4 @@ export const Post: React.FC = ({}) => {
     );
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Post);
+export default Post;
